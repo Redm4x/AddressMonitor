@@ -1,0 +1,24 @@
+{
+  "globalDependencies": {
+    "classnames": "registry:dt/classnames#0.0.0+20160316155526",
+    "es6-promise": "registry:dt/es6-promise#0.0.0+20160614011821",
+    "immutable": "registry:dt/immutable#3.8.1+20160608070634",
+    "jquery": "registry:dt/jquery#1.10.0+20160704162008",
+    "jwt-decode": "registry:dt/jwt-decode#1.4.0+20160317120654",
+    "lodash": "registry:dt/lodash#4.14.0+20160802150749",
+    "node": "registry:dt/node#6.0.0+20160907103612",
+    "normalizr": "registry:dt/normalizr#2.0.1+20160501130729",
+    "react": "registry:dt/react#0.14.0+20160805125551",
+    "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
+    "react-dropzone": "registry:dt/react-dropzone#0.0.0+20160830165722",
+    "react-intl": "registry:dt/react-intl#2.0.0+20160412155000",
+    "react-redux": "registry:dt/react-redux#4.4.0+20160724070751",
+    "react-router": "registry:dt/react-router#2.0.0+20160621215300",
+    "react-router-redux": "registry:dt/react-router-redux#4.0.0+20160724070902",
+    "react-router/history": "registry:dt/react-router/history#2.0.0+20160608102730",
+    "redux": "registry:dt/redux#3.5.2+20160703092728",
+    "redux-logger": "registry:dt/redux-logger#2.6.0+20160619033847",
+    "redux-thunk": "registry:dt/redux-thunk#2.1.0+20160703120921",
+    "whatwg-fetch": "registry:dt/whatwg-fetch#0.0.0+20160728142841"
+  }
+}
