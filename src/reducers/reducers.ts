@@ -3,7 +3,8 @@ import {List, Map, fromJS} from "immutable";
 
 const initialState: Map<string, any> = Map({
   addresses: List<Map<string, any>>(),
-  prices: Map<string,any>(),
+  prices: Map<string, any>(),
+  currentAddress: "",
 });
 
 export default function mainReducers(state = initialState, action) {

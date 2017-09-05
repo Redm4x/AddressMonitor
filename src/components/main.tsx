@@ -10,23 +10,21 @@ require('bootstrap/dist/js/bootstrap');
 
 interface IAppProps {
   addresses: List<Map<string, any>>;
+  currentAddress: string;
 
   loadAddresses: () => Promise<void>;
   loadPrices: () => Promise<void>;
   computePrices: () => void;
+  updateCurrentAddress: (newAddress: string) => void;
 }
 
 interface IAppState {
-  currentAddress: string;
+
 }
 
 export class Main extends React.Component<IAppProps, IAppState> {
   constructor(props: IAppProps) {
     super(props);
-
-    this.state = {
-      currentAddress: "",
-    };
   }
 
   componentWillMount() {
@@ -39,13 +37,11 @@ export class Main extends React.Component<IAppProps, IAppState> {
   }
 
   handleCurrentAddressChange = (e) => {
-    this.setState({
-      currentAddress: e.target.value
-    });
+    this.props.updateCurrentAddress(e.target.value)
   }
 
   addAddress = () => {
-    window.location.href = window.location.pathname + "?addrs=btc:" + this.state.currentAddress;
+    window.location.href = window.location.pathname + "?addrs=btc:" + this.props.currentAddress;
   }
 
   render() {
@@ -129,4 +125,5 @@ export default connect(mapStateToProps, {
   loadAddresses,
   loadPrices,
   computePrices,
+  updateCurrentAddress,
 })(Main);

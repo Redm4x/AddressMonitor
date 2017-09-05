@@ -92,3 +92,10 @@ export function computePrices() {
     });
   }
 }
+
+export function updateCurrentAddress(newAddress: string) {
+  return {
+    type: types.UPDATE_CURRENT_ADDRESS,
+    address: newAddress,
+  };
+}
