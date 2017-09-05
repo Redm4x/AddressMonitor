@@ -22,7 +22,8 @@ export function loadAddresses() {
           addresses = addresses.push(Map({
             address: parts[1],
             coin: coin,
-            isLoading: true,
+            isLoadingBalance: true,
+            isLoadingPrice: true,
           }));
         }
       }
@@ -32,7 +33,7 @@ export function loadAddresses() {
         addresses,
       });
 
-      dispatch(loadBalances());
+      return dispatch(loadBalances());
     }
   }
 }
@@ -43,11 +44,11 @@ function loadBalances() {
     const addresses = getState().get("addresses");
     const url = "https://blockchain.info/balance?active=" + addresses.map(a => a.get("address")).toArray().join("|") + "&cors=true";
 
-    axios.get(url).then(response => {
+    return axios.get(url).then(response => {
       let result = fromJS(response.data);
       let newAddresses = getState().get("addresses").map(address => {
-        return address.set("balance", result.getIn([address.get("address"), "final_balance"]))
-          .set("isLoading", false);
+        return address.set("balance", result.getIn([address.get("address"), "final_balance"]) / 100000000)
+          .set("isLoadingBalance", false);
       }).toList();
 
       dispatch({
@@ -61,6 +62,33 @@ function loadBalances() {
 
 export function loadPrices() {
   return (dispatch: Dispatch<any>, getState) => {
+    const url = "https://api.coinmarketcap.com/v1/ticker/?convert=USD&limit=20";
 
+    return axios.get(url).then(response => {
+      let result = fromJS(response.data);
+
+      dispatch({
+        type: types.UPDATE_PRICES,
+        prices: result
+      });
+    });
+  }
+}
+
+export function computePrices() {
+  return (dispatch: Dispatch<any>, getState) => {
+
+    const addresses = getState().get("addresses");
+    const prices = getState().get("prices");
+
+    let newAddresses = addresses.map(addr => {
+      return addr.set("price", addr.get("balance") * prices.find(p => p.get("symbol") == addr.getIn(["coin", "code"]))
+        .get("price_usd")).set("isLoadingPrice", false);
+    });
+
+    dispatch({
+      type: types.UPDATE_ADDRESSES,
+      addresses: newAddresses,
+    });
   }
 }

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 import { Map, List, fromJS } from "immutable";
 import { FormattedRelative } from "react-intl";
-import { loadAddresses, loadPrices } from "../actions/actions";
+import { loadAddresses, loadPrices, computePrices } from "../actions/actions";
 import { supportedCoins } from "../utils/contants";
 
 require('bootstrap/dist/js/bootstrap');
@@ -11,8 +11,9 @@ require('bootstrap/dist/js/bootstrap');
 interface IAppProps {
   addresses: List<Map<string, any>>;
 
-  loadAddresses: () => void;
-  loadPrices: () => void;
+  loadAddresses: () => Promise<void>;
+  loadPrices: () => Promise<void>;
+  computePrices: () => void;
 }
 
 interface IAppState {
@@ -29,8 +30,12 @@ export class Main extends React.Component<IAppProps, IAppState> {
   }
 
   componentWillMount() {
-    this.props.loadAddresses();
-    this.props.loadPrices();
+    let addressLoading = this.props.loadAddresses();
+    let priceLoading = this.props.loadPrices();
+
+    Promise.all([addressLoading, priceLoading]).then(() => {
+      this.props.computePrices();
+    });
   }
 
   handleCurrentAddressChange = (e) => {
@@ -53,9 +58,15 @@ export class Main extends React.Component<IAppProps, IAppState> {
         <td>{current.get("address")}</td>
         <td>{current.getIn(["coin", "code"])}</td>
         <td>
-          {current.get("isLoading")
+          {current.get("isLoadingBalance")
             ? <i className="fa fa-spinner fa-spin fa-fw"></i>
-            : <span>{current.get("balance") / 100000000}</span>
+            : <span>{current.get("balance")}</span>
+          }
+        </td>
+        <td>
+          {current.get("isLoadingPrice")
+            ? <i className="fa fa-spinner fa-spin fa-fw"></i>
+            : <span>{Math.round(current.get("price") * 100) / 100}$</span>
           }
         </td>
       </tr>;
@@ -93,6 +104,7 @@ export class Main extends React.Component<IAppProps, IAppState> {
                     <th>Address</th>
                     <th>Coin</th>
                     <th>Balance</th>
+                    <th>Price (USD)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -116,4 +128,5 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
   loadAddresses,
   loadPrices,
+  computePrices,
 })(Main);

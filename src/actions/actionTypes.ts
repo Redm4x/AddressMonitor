@@ -1,1 +1,2 @@
 export const UPDATE_ADDRESSES = "UPDATE_ADDRESSES";
+export const UPDATE_PRICES = "UPDATE_PRICES";
