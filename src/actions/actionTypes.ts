@@ -1,0 +1,1 @@
+export const UPDATE_ADDRESSES = "UPDATE_ADDRESSES";

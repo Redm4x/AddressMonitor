@@ -1,85 +1,36 @@
 import * as React from "react";
+import { connect } from "react-redux";
 
 import { Map, List, fromJS } from "immutable";
-import axios from "axios";
 import { FormattedRelative } from "react-intl";
+import { loadAddresses, loadPrices } from "../actions/actions";
+import { supportedCoins } from "../utils/contants";
 
 require('bootstrap/dist/js/bootstrap');
 
-const queryString = require('query-string');
-
-const supportedCoins = fromJS([
-  {
-    title: "Bitcoin",
-    code: "BTC",
-  }
-]);
-
 interface IAppProps {
+  addresses: List<Map<string, any>>;
 
+  loadAddresses: () => void;
+  loadPrices: () => void;
 }
 
 interface IAppState {
-  addresses: List<Map<string, any>>;
   currentAddress: string;
 }
 
-export default class Main extends React.Component<IAppProps, IAppState> {
+export class Main extends React.Component<IAppProps, IAppState> {
   constructor(props: IAppProps) {
     super(props);
 
     this.state = {
-      addresses: List<Map<string, any>>(),
       currentAddress: "",
     };
   }
 
   componentWillMount() {
-    this.loadAddresses();
-  }
-
-  loadAddresses = () => {
-    const params = queryString.parse(window.location.search);
-
-    if (params && params.addrs) {
-      let addresses = List([]);
-      let addrs = params.addrs.split(",");
-
-      for (let i = 0; i < addrs.length; i++) {
-        const parts = addrs[i].split(":");
-        const coin = supportedCoins.find(c => c.get("code").toUpperCase() == parts[0].toUpperCase());
-
-        if (coin) {
-          addresses = addresses.push(Map({
-            address: parts[1],
-            coin: coin,
-            isLoading: true,
-          }));
-        }
-      }
-      
-      this.setState({
-        addresses: addresses
-      });
-
-      this.loadBalances(addresses);
-    }
-  }
-
-  loadBalances = (addresses: List<Map<string,any>>) => {
-    const url = "https://blockchain.info/balance?active=" + addresses.map(a => a.get("address")).toArray().join("|") + "&cors=true";
-    
-    axios.get(url).then(response => {
-      let result = fromJS(response.data);
-      let newAddresses = this.state.addresses.map(address => {
-        return address.set("balance", result.getIn([address.get("address"), "final_balance"]))
-          .set("isLoading", false);
-      }).toList();
-
-      this.setState({
-        addresses: newAddresses
-      });
-    });
+    this.props.loadAddresses();
+    this.props.loadPrices();
   }
 
   handleCurrentAddressChange = (e) => {
@@ -93,11 +44,11 @@ export default class Main extends React.Component<IAppProps, IAppState> {
   }
 
   render() {
-    const { } = this.props;
+    const { addresses } = this.props;
 
     let currentCoin = supportedCoins.first();
 
-    let addresses = this.state.addresses.map(current => {
+    let addressList = addresses.map(current => {
       return <tr key={current.get("address")}>
         <td>{current.get("address")}</td>
         <td>{current.getIn(["coin", "code"])}</td>
@@ -145,7 +96,7 @@ export default class Main extends React.Component<IAppProps, IAppState> {
                   </tr>
                 </thead>
                 <tbody>
-                  {addresses}
+                  {addressList}
                 </tbody>
               </table>
             )}
@@ -155,3 +106,14 @@ export default class Main extends React.Component<IAppProps, IAppState> {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    addresses: state.get("addresses"),
+  }
+}
+
+export default connect(mapStateToProps, {
+  loadAddresses,
+  loadPrices,
+})(Main);

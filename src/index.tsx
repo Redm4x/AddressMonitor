@@ -1,6 +1,8 @@
 import * as React from "react";
 import { render } from "react-dom";
 import { IntlProvider, addLocaleData } from "react-intl";
+import { Provider } from "react-redux";
+import store from "./reducers/rootReducer";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "font-awesome/css/font-awesome.css";
@@ -12,8 +14,10 @@ var fr = require('react-intl/locale-data/fr');
 addLocaleData(fr);
 
 render(
-    <IntlProvider locale="en-CA">
+  <IntlProvider locale="en-CA">
+    <Provider store={store}>
       <Main />
-    </IntlProvider>,
+    </Provider>
+  </IntlProvider>,
   document.getElementById("root")
 )
