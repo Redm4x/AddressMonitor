@@ -11,30 +11,39 @@ export function loadAddresses() {
   return (dispatch: Dispatch<any>, getState) => {
     const params = queryString.parse(window.location.search);
 
-    if (params && params.addrs) {
-      let addresses = List([]);
-      let addrs = params.addrs.split(",");
+    let addresses = List([]);
 
-      for (let i = 0; i < addrs.length; i++) {
-        const parts = addrs[i].split(":");
-        const coin = supportedCoins.find(c => c.get("code").toUpperCase() == parts[0].toUpperCase());
+    Object.keys(params).forEach(key => {
+      let coin = supportedCoins.find(c => c.get("code") == key.toUpperCase());
 
-        if (coin) {
+      if (coin) {
+        let addrs = params[key].split(",");
+
+        for (let i = 0; i < addrs.length; i++) {
+          const addr = addrs[i];
+
+          if (addresses.some(x => x.get("address") == addr)) continue; // Duplicate
+
           addresses = addresses.push(Map({
-            address: parts[1],
+            address: addr,
             coin: coin,
             isLoadingBalance: true,
             isLoadingPrice: true,
           }));
         }
       }
+    });
 
+    if (!addresses.isEmpty()) {
       dispatch({
         type: types.UPDATE_ADDRESSES,
         addresses,
       });
 
       return dispatch(loadBalances());
+    }
+    else {
+      return Promise.resolve();
     }
   }
 }
@@ -104,9 +113,11 @@ export function updateCurrentAddress(newAddress: string) {
 export function addAddress() {
   return (dispatch: Dispatch<any>, getState) => {
     const currentAddress = getState().get("currentAddress");
+    const addresses = getState().get("addresses");
 
     if (btcHelpers.isValidAddress(currentAddress)) {
-      window.location.href = window.location.pathname + "?addrs=btc:" + currentAddress;
+      let newAddresses = addresses.map(x => x.get("address")).push(currentAddress).reduce((prev, next) => prev + "," + next);
+      window.location.href = window.location.pathname + "?btc=" + newAddresses;
     } else {
       dispatch({
         type: types.UPDATE_CURRENT_ADDRESS_ERROR,
