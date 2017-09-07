@@ -4,6 +4,8 @@ import { Map, List, fromJS } from "immutable";
 
 interface IAppProps {
   trackedAddress: Map<string, any>;
+
+  removeAddress: (address: Map<string, any>) => any;
 }
 
 export class TrackedAddressRow extends React.Component<IAppProps, void> {
@@ -12,7 +14,7 @@ export class TrackedAddressRow extends React.Component<IAppProps, void> {
   }
 
   render() {
-    const { trackedAddress } = this.props;
+    const { trackedAddress, removeAddress } = this.props;
 
     return (
       <tr>
@@ -30,6 +32,7 @@ export class TrackedAddressRow extends React.Component<IAppProps, void> {
             : <span>{Math.round(trackedAddress.get("price") * 100) / 100}$</span>
           }
         </td>
+        <td><a href="javascript:;" onClick={() => removeAddress(trackedAddress)}><i className="fa fa-times"></i></a></td>
       </tr>
     );
   }

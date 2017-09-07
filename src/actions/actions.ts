@@ -16,7 +16,7 @@ export function loadAddresses() {
     Object.keys(params).forEach(key => {
       let coin = supportedCoins.find(c => c.get("code") == key.toUpperCase());
 
-      if (coin) {
+      if (coin && params[key]) {
         let addrs = params[key].split(",");
 
         for (let i = 0; i < addrs.length; i++) {
@@ -118,7 +118,10 @@ export function addAddress() {
     currentAddress = currentAddress.trim();
 
     if (btcHelpers.isValidAddress(currentAddress)) {
-      let newAddresses = addresses.map(x => x.get("address")).push(currentAddress).reduce((prev, next) => prev + "," + next);
+      let newAddresses = addresses.map(x => x.get("address"))
+        .push(currentAddress)
+        .reduce((prev, next) => prev + "," + next);
+
       window.location.href = window.location.pathname + "?btc=" + newAddresses;
     } else {
       dispatch({
@@ -126,5 +129,23 @@ export function addAddress() {
         isInvalid: true
       });
     }
+  }
+}
+
+export function removeAddress(address: Map<string, any>) {
+  return (dispatch: Dispatch<any>, getState) => {
+    const addresses = getState().get("addresses");
+    
+    let newAddresses = addresses.filterNot(a => a.get("address") == address.get("address"))
+      .map(x => x.get("address"))
+      .reduce((prev, next) => prev + "," + next);
+
+    let url = window.location.pathname;
+
+    if (newAddresses) {
+      url += "?btc=" + newAddresses;
+    }
+
+    window.location.href = url;
   }
 }

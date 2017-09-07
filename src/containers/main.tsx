@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import { Map, List, fromJS } from "immutable";
-import { loadAddresses, loadPrices, computePrices, updateCurrentAddress, addAddress } from "../actions/actions";
+import { loadAddresses, loadPrices, computePrices, updateCurrentAddress, addAddress, removeAddress } from "../actions/actions";
 import { TrackedAddressRow } from "../components/trackedAddressRow";
 import { AddAddressForm } from "../components/addAddressForm";
 
@@ -16,6 +16,7 @@ interface IAppProps {
   computePrices: () => void;
   updateCurrentAddress: (newAddress: string) => void;
   addAddress: () => void;
+  removeAddress: (address: Map<string, any>) => void;
 }
 
 export class Main extends React.Component<IAppProps, void> {
@@ -37,10 +38,10 @@ export class Main extends React.Component<IAppProps, void> {
   }
 
   render() {
-    const { addresses, currentAddress, addAddress, isCurrentAddressInvalid, updateCurrentAddress } = this.props;
-    
+    const { addresses, currentAddress, addAddress, isCurrentAddressInvalid, updateCurrentAddress, removeAddress } = this.props;
+
     let addressList = addresses.map(current => {
-      return <TrackedAddressRow key={current.get("address")} trackedAddress={current} />
+      return <TrackedAddressRow key={current.get("address")} trackedAddress={current} removeAddress={removeAddress} />
     }).toList();
 
     return (
@@ -62,6 +63,7 @@ export class Main extends React.Component<IAppProps, void> {
                     <th>Coin</th>
                     <th>Balance</th>
                     <th>Price (USD)</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -90,4 +92,5 @@ export default connect(mapStateToProps, {
   computePrices,
   updateCurrentAddress,
   addAddress,
+  removeAddress,
 })(Main);
