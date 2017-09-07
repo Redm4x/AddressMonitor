@@ -112,8 +112,10 @@ export function updateCurrentAddress(newAddress: string) {
 
 export function addAddress() {
   return (dispatch: Dispatch<any>, getState) => {
-    const currentAddress = getState().get("currentAddress");
     const addresses = getState().get("addresses");
+    let currentAddress = getState().get("currentAddress");
+
+    currentAddress = currentAddress.trim();
 
     if (btcHelpers.isValidAddress(currentAddress)) {
       let newAddresses = addresses.map(x => x.get("address")).push(currentAddress).reduce((prev, next) => prev + "," + next);
