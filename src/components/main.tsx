@@ -2,9 +2,9 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import { Map, List, fromJS } from "immutable";
-import { FormattedRelative } from "react-intl";
 import { loadAddresses, loadPrices, computePrices, updateCurrentAddress } from "../actions/actions";
 import { supportedCoins } from "../utils/contants";
+import { TrackedAddressRow } from "./trackedAddressRow";
 
 require('bootstrap/dist/js/bootstrap');
 
@@ -18,11 +18,7 @@ interface IAppProps {
   updateCurrentAddress: (newAddress: string) => void;
 }
 
-interface IAppState {
-
-}
-
-export class Main extends React.Component<IAppProps, IAppState> {
+export class Main extends React.Component<IAppProps, void> {
   constructor(props: IAppProps) {
     super(props);
   }
@@ -50,22 +46,7 @@ export class Main extends React.Component<IAppProps, IAppState> {
     let currentCoin = supportedCoins.first();
 
     let addressList = addresses.map(current => {
-      return <tr key={current.get("address")}>
-        <td>{current.get("address")}</td>
-        <td>{current.getIn(["coin", "code"])}</td>
-        <td>
-          {current.get("isLoadingBalance")
-            ? <i className="fa fa-spinner fa-spin fa-fw"></i>
-            : <span>{current.get("balance")}</span>
-          }
-        </td>
-        <td>
-          {current.get("isLoadingPrice")
-            ? <i className="fa fa-spinner fa-spin fa-fw"></i>
-            : <span>{Math.round(current.get("price") * 100) / 100}$</span>
-          }
-        </td>
-      </tr>;
+      return <TrackedAddressRow key={current.get("address")} trackedAddress={current} />
     }).toList();
 
     let coinList = supportedCoins.map(c => {
