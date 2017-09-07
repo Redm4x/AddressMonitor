@@ -41,18 +41,6 @@ module.exports = {
       //hash: true
     }),
 
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      minChunks(module, count) {
-        var context = module.context;
-        return context && context.indexOf('node_modules') >= 0;
-      }
-    }),
-
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'manifest'
-    }),
-
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',

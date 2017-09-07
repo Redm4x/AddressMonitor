@@ -6,7 +6,7 @@ import { loadAddresses, loadPrices, computePrices, updateCurrentAddress } from "
 import { supportedCoins } from "../utils/contants";
 import { TrackedAddressRow } from "./trackedAddressRow";
 
-require('bootstrap/dist/js/bootstrap');
+require('bootstrap/dist/js/bootstrap.min');
 
 interface IAppProps {
   addresses: List<Map<string, any>>;
