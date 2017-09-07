@@ -59,22 +59,24 @@ export class Main extends React.Component<IAppProps, void> {
         <div className="row">
           <div className="col-md-6 col-md-offset-3">
             <h1 className="pageTitle">Address Monitor</h1>
-            <div className={classNames("form-group", { "has-error": isCurrentAddressInvalid })}>
-              <div className="input-group">
-                <div className="input-group-btn">
-                  <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {currentCoin.get("code")} <span className="caret"></span>
-                  </button>
-                  <ul className="dropdown-menu dropdown-menu-left">
-                    {coinList}
-                  </ul>
+            <form onSubmit={(e) => { e.preventDefault(); addAddress() }}>
+              <div className={classNames("form-group", { "has-error": isCurrentAddressInvalid })}>
+                <div className="input-group">
+                  <div className="input-group-btn">
+                    <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      {currentCoin.get("code")} <span className="caret"></span>
+                    </button>
+                    <ul className="dropdown-menu dropdown-menu-left">
+                      {coinList}
+                    </ul>
+                  </div>
+                  <input type="text" value={currentAddress} className="form-control" onChange={this.handleCurrentAddressChange} placeholder={`Enter address (ex : ${donateAddress})`} />
+                  <span className="input-group-btn">
+                    <button className="btn btn-default" type="submit">Check</button>
+                  </span>
                 </div>
-                <input type="text" value={currentAddress} className="form-control" onChange={this.handleCurrentAddressChange} placeholder={`Enter address (ex : ${donateAddress})`} />
-                <span className="input-group-btn">
-                  <button className="btn btn-default" type="button" onClick={() => addAddress()}>Check</button>
-                </span>
               </div>
-            </div>
+            </form>
             <br />
             {!addresses.isEmpty() && (
               <table className="table packagesTable">
