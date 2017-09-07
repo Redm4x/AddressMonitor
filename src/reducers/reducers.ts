@@ -5,6 +5,7 @@ const initialState: Map<string, any> = Map({
   addresses: List<Map<string, any>>(),
   prices: Map<string, any>(),
   currentAddress: "",
+  isCurrentAddressInvalid: false,
 });
 
 export default function mainReducers(state = initialState, action) {
@@ -17,6 +18,9 @@ export default function mainReducers(state = initialState, action) {
 
     case types.UPDATE_CURRENT_ADDRESS:
       return state.set("currentAddress", action.address);
+
+    case types.UPDATE_CURRENT_ADDRESS_ERROR:
+      return state.set("isCurrentAddressInvalid", action.isInvalid);
 
     default:
       return state;

@@ -3,6 +3,7 @@ import { List, Map, fromJS } from "immutable";
 import axios from "axios";
 import { Dispatch } from "redux";
 import { supportedCoins } from "../utils/contants";
+import * as btcHelpers from "../utils/btcHelpers";
 
 const queryString = require('query-string');
 
@@ -98,4 +99,19 @@ export function updateCurrentAddress(newAddress: string) {
     type: types.UPDATE_CURRENT_ADDRESS,
     address: newAddress,
   };
+}
+
+export function addAddress() {
+  return (dispatch: Dispatch<any>, getState) => {
+    const currentAddress = getState().get("currentAddress");
+
+    if (btcHelpers.isValidAddress(currentAddress)) {
+      window.location.href = window.location.pathname + "?addrs=btc:" + currentAddress;
+    } else {
+      dispatch({
+        type: types.UPDATE_CURRENT_ADDRESS_ERROR,
+        isInvalid: true
+      });
+    }
+  }
 }
