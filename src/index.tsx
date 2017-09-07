@@ -8,7 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "font-awesome/css/font-awesome.css";
 import "./sass/main.scss";
 
-import Main from "./components/main";
+import Main from "./containers/main";
 
 var fr = require('react-intl/locale-data/fr');
 addLocaleData(fr);

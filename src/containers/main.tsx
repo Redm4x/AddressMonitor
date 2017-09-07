@@ -3,11 +3,8 @@ import { connect } from "react-redux";
 
 import { Map, List, fromJS } from "immutable";
 import { loadAddresses, loadPrices, computePrices, updateCurrentAddress, addAddress } from "../actions/actions";
-import { supportedCoins } from "../utils/contants";
-import { TrackedAddressRow } from "./trackedAddressRow";
-import * as classNames from "classnames";
-
-require('bootstrap/dist/js/bootstrap.min');
+import { TrackedAddressRow } from "../components/trackedAddressRow";
+import { AddAddressForm } from "../components/addAddressForm";
 
 interface IAppProps {
   addresses: List<Map<string, any>>;
@@ -40,43 +37,22 @@ export class Main extends React.Component<IAppProps, void> {
   }
 
   render() {
-    const { addresses, currentAddress, addAddress, isCurrentAddressInvalid } = this.props;
-
-    let currentCoin = supportedCoins.first();
-
+    const { addresses, currentAddress, addAddress, isCurrentAddressInvalid, updateCurrentAddress } = this.props;
+    
     let addressList = addresses.map(current => {
       return <TrackedAddressRow key={current.get("address")} trackedAddress={current} />
     }).toList();
-
-    let coinList = supportedCoins.map(c => {
-      return <li key={c.get("code")}><a className="dropdown-item" href="#">{c.get("code")}</a></li>;
-    });
-
-    const donateAddress = "12E5AiZ2rDRRgnnLr7mqJ1eRfjhqAaHC3Z";
 
     return (
       <div className="container">
         <div className="row">
           <div className="col-md-6 col-md-offset-3">
             <h1 className="pageTitle">Address Monitor</h1>
-            <form onSubmit={(e) => { e.preventDefault(); addAddress() }}>
-              <div className={classNames("form-group", { "has-error": isCurrentAddressInvalid })}>
-                <div className="input-group">
-                  <div className="input-group-btn">
-                    <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      {currentCoin.get("code")} <span className="caret"></span>
-                    </button>
-                    <ul className="dropdown-menu dropdown-menu-left">
-                      {coinList}
-                    </ul>
-                  </div>
-                  <input type="text" value={currentAddress} className="form-control" onChange={this.handleCurrentAddressChange} placeholder={`Enter address (ex : ${donateAddress})`} />
-                  <span className="input-group-btn">
-                    <button className="btn btn-default" type="submit">Check</button>
-                  </span>
-                </div>
-              </div>
-            </form>
+            <AddAddressForm
+              addAddress={addAddress}
+              currentAddress={currentAddress}
+              isCurrentAddressInvalid={isCurrentAddressInvalid}
+              updateCurrentAddress={updateCurrentAddress} />
             <br />
             {!addresses.isEmpty() && (
               <table className="table packagesTable">
