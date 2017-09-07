@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 import { Map, List, fromJS } from "immutable";
 import { FormattedRelative } from "react-intl";
-import { loadAddresses, loadPrices, computePrices } from "../actions/actions";
+import { loadAddresses, loadPrices, computePrices, updateCurrentAddress } from "../actions/actions";
 import { supportedCoins } from "../utils/contants";
 
 require('bootstrap/dist/js/bootstrap');
@@ -45,7 +45,7 @@ export class Main extends React.Component<IAppProps, IAppState> {
   }
 
   render() {
-    const { addresses } = this.props;
+    const { addresses, currentAddress } = this.props;
 
     let currentCoin = supportedCoins.first();
 
@@ -72,6 +72,8 @@ export class Main extends React.Component<IAppProps, IAppState> {
       return <li key={c.get("code")}><a className="dropdown-item" href="#">{c.get("code")}</a></li>;
     });
 
+    const donateAddress = "12E5AiZ2rDRRgnnLr7mqJ1eRfjhqAaHC3Z";
+
     return (
       <div className="container">
         <div className="row">
@@ -86,8 +88,7 @@ export class Main extends React.Component<IAppProps, IAppState> {
                   {coinList}
                 </ul>
               </div>
-              <input type="text" className="form-control" onChange={this.handleCurrentAddressChange} placeholder="Enter address (ex : 14giKmNzVRSognpmievyqgt9JeT5tPdmfr)" />
-              {/* FOR TESTING : 12E5AiZ2rDRRgnnLr7mqJ1eRfjhqAaHC3Z */}
+              <input type="text" value={currentAddress} className="form-control" onChange={this.handleCurrentAddressChange} placeholder={`Enter address (ex : ${donateAddress})`} />
               <span className="input-group-btn">
                 <button className="btn btn-default" type="button" onClick={() => this.addAddress()}>Check</button>
               </span>
@@ -118,6 +119,7 @@ export class Main extends React.Component<IAppProps, IAppState> {
 const mapStateToProps = (state) => {
   return {
     addresses: state.get("addresses"),
+    currentAddress: state.get("currentAddress"),
   }
 }
 

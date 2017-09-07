@@ -15,6 +15,9 @@ export default function mainReducers(state = initialState, action) {
     case types.UPDATE_PRICES:
       return state.set("prices", action.prices);
 
+    case types.UPDATE_CURRENT_ADDRESS:
+      return state.set("currentAddress", action.address);
+
     default:
       return state;
   }
