@@ -5,7 +5,7 @@ export function isValidAddress(address: string) {
   const maxLength = 34;
 
   if (address.length >= minLength && address.length <= maxLength) {
-    if (address.startsWith("1")) {
+    if (address.startsWith("1") || address.startsWith("3")) {
       return true;
     }
   }
